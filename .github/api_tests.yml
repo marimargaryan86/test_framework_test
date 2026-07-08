@@ -1,0 +1,51 @@
+name: API Automation Regression Suite
+
+# This tells GitHub when to run the pipeline
+on:
+  push:
+    branches: [ main, master ]  # Runs every time code is pushed to main
+  pull_request:
+    branches: [ main, master ]  # Runs every time a pull request is opened
+
+jobs:
+  run-api-tests:
+    runs-on: ubuntu-latest  # Spins up a fresh Linux machine
+
+    steps:
+    # Step 1: Clone your repository onto the Linux machine
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # Step 2: Install Python on the Linux machine
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-numeric-version: '3.11'
+
+    # Step 3: Install all libraries listed in your requirements.txt
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # Step 4: Create a temporary .env file for the cloud machine
+    # (Since we don't commit our real .env file to GitHub for security)
+    - name: Create Env File
+      run: |
+        echo "BASE_URL=https://jsonplaceholder.typicode.com" > .env
+
+    # Step 5: Run your pytest suite and generate Allure results
+    # The 'continue-on-error: true' ensures the pipeline doesn't stop if a test fails,
+    # allowing us to still generate the visual report assets!
+    - name: Execute Tests
+      run: |
+        pytest -v --alluredir=allure-results
+      continue-on-error: true
+
+    # Step 6: Upload the Allure results so they are saved as a build artifact
+    - name: Upload Test Results Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results
+        path: allure-results
+        retention-days: 5
