@@ -1,13 +1,19 @@
 from src.models.user_model import UserModel
+import pytest
 from faker import Faker
 import allure
 fake = Faker()
 
+@pytest.mark.smoke
+@pytest.mark.user_management
+@allure.feature("User Management")
 def test_get_single_user_status_code(user_client):
     response = user_client.get_single_user(user_id=2)
     assert response.status_code == 200
 
-
+@pytest.mark.smoke
+@pytest.mark.user_management
+@allure.feature("User Management")
 def test_get_single_user_schema_and_data(user_client):
     response = user_client.get_single_user(user_id=2)
     response_data = response.json()
@@ -21,6 +27,8 @@ def test_get_single_user_schema_and_data(user_client):
     assert user.id == 2
 
 
+@pytest.mark.smoke
+@pytest.mark.user_management
 @allure.feature("User Management")
 @allure.story("Create User Account")
 def test_create_user_with_dynamic_faker_data(user_client):
