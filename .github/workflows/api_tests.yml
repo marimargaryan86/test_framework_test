@@ -17,42 +17,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Create Env File
-      run: |
-        echo "BASE_URL=https://jsonplaceholder.typicode.com" > .env
+      - name: Create Env File
+        run: |
+          echo "BASE_URL=https://jsonplaceholder.typicode.com" > .env
 
-    - name: Execute Tests
-      run: |
-        pytest -v --alluredir=allure-results
-      continue-on-error: true
+      - name: Execute Tests
+        run: |
+          pytest -v --alluredir=allure-results
+        continue-on-error: true
 
-    # 🆕 NEW STEP: Generates the actual HTML website from the raw results
-    - name: Generate Allure Report
-      uses: simple-elf/allure-report-action@master
-      if: always()
-      with:
-        allure_results: allure-results
-        allure_history: allure-history
-        keep_reports: 20
+      # 🆕 NEW STEP: Generates the actual HTML website from the raw results
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
 
-    # 🆕 NEW STEP: Deploys the generated HTML report to GitHub Pages branch
-    - name: Deploy Report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: always()
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: allure-history
+      # 🆕 NEW STEP: Deploys the generated HTML report to GitHub Pages branch
+      - name: Deploy Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history

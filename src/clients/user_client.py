@@ -1,5 +1,6 @@
 from src.clients.base_client import BaseClient
 
+
 class UserClient(BaseClient):
 
     def get_single_user(self, user_id: int):

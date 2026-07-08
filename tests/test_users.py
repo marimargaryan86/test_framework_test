@@ -2,7 +2,9 @@ from src.models.user_model import UserModel
 import pytest
 from faker import Faker
 import allure
+
 fake = Faker()
+
 
 @pytest.mark.smoke
 @pytest.mark.user_management
@@ -10,6 +12,7 @@ fake = Faker()
 def test_get_single_user_status_code(user_client):
     response = user_client.get_single_user(user_id=2)
     assert response.status_code == 200
+
 
 @pytest.mark.smoke
 @pytest.mark.user_management
