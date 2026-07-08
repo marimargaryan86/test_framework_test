@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     # Pydantic automatically looks for an environment variable named BASE_URL
     # or a key named BASE_URL inside your .env file.
-    base_url: str
+    BASE_URL: str
 
     # If you want to add timeouts or thread counts later, Pydantic casts them automatically!
     # timeout: int = 30
