@@ -1,12 +1,17 @@
-import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Load the variables from the .env file
-load_dotenv()
 
-class Config:
-    BASE_URL = os.getenv("BASE_URL")
+class Settings(BaseSettings):
+    # Pydantic automatically looks for an environment variable named BASE_URL
+    # or a key named BASE_URL inside your .env file.
+    base_url: str
 
-    # We can add a fallback error just in case we forget to set it in .env
-    if not BASE_URL:
-        raise ValueError("BASE_URL is not set in the environment or .env file!")
+    # If you want to add timeouts or thread counts later, Pydantic casts them automatically!
+    # timeout: int = 30
+
+    # Tell Pydantic to read from a .env file automatically
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+
+# Instantiate it once to expose it globally
+Config = Settings()
