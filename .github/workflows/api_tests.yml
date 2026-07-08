@@ -1,51 +1,58 @@
 name: API Automation Regression Suite
 
-# This tells GitHub when to run the pipeline
 on:
   push:
-    branches: [ main, master ]  # Runs every time code is pushed to main
+    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]  # Runs every time a pull request is opened
+    branches: [ main, master ]
+
+# This permission block is critical—it gives the runner authority to publish web pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   run-api-tests:
-    runs-on: ubuntu-latest  # Spins up a fresh Linux machine
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Clone your repository onto the Linux machine
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # Step 2: Install Python on the Linux machine
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-numeric-version: '3.11'
+        python-version: '3.11'
 
-    # Step 3: Install all libraries listed in your requirements.txt
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Step 4: Create a temporary .env file for the cloud machine
-    # (Since we don't commit our real .env file to GitHub for security)
     - name: Create Env File
       run: |
         echo "BASE_URL=https://jsonplaceholder.typicode.com" > .env
 
-    # Step 5: Run your pytest suite and generate Allure results
-    # The 'continue-on-error: true' ensures the pipeline doesn't stop if a test fails,
-    # allowing us to still generate the visual report assets!
     - name: Execute Tests
       run: |
         pytest -v --alluredir=allure-results
       continue-on-error: true
 
-    # Step 6: Upload the Allure results so they are saved as a build artifact
-    - name: Upload Test Results Artifact
-      uses: actions/upload-artifact@v4
+    # 🆕 NEW STEP: Generates the actual HTML website from the raw results
+    - name: Generate Allure Report
+      uses: simple-elf/allure-report-action@master
+      if: always()
       with:
-        name: allure-results
-        path: allure-results
-        retention-days: 5
+        allure_results: allure-results
+        allure_history: allure-history
+        keep_reports: 20
+
+    # 🆕 NEW STEP: Deploys the generated HTML report to GitHub Pages branch
+    - name: Deploy Report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history
