@@ -1,4 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","82","test_get_single_user_status_code","tests","2026-07-08","passed","2026-07-08","","test_users","",""
-"","38","test_get_single_user_schema_and_data","tests","2026-07-08","passed","2026-07-08","","test_users","",""
-"","116","test_create_user_with_dynamic_faker_data","tests","2026-07-08","passed","2026-07-08","","test_users","",""
