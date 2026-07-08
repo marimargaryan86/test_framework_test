@@ -1,0 +1,29 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Python Cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# IDE settings
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Local Environment & Secrets
+.env
+
+# Test Reports and Generated Assets
+allure-results/
+allure-history/
+htmlcov/
+.coverage
